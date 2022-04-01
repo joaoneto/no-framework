@@ -1,0 +1,9 @@
+{
+  "presets": [
+    "@babel/preset-typescript",
+    ["@babel/preset-env", { "targets": { "node": true } }]
+  ],
+  "plugins": [
+    ["@babel/plugin-transform-react-jsx", { "pragma": "_createElement", "pragmaFrag": "_Fragment" }]
+  ]
+}
