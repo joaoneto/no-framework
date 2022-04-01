@@ -7,12 +7,12 @@ interface TodoListItemProps {
 }
 
 interface TodoListProps {
-  children: any;
+  children?: ComponentChildren[];
 }
 
 const TodoListItem = ({ id, description }: TodoListItemProps) => <li id={id}>{description}</li>;
 
-const TodoList = ({ children }: any) => <ul>{children}</ul>;
+const TodoList = ({ children }: TodoListProps) => <ul>{children}</ul>;
 
 const App = () => {
   // const [todos, { map, rm, add }] = dataAndDOMHandlers([])
@@ -24,9 +24,11 @@ const App = () => {
 
   const todoList = (
     <TodoList>
-      {todos.map(({ id, description }) => (
-        <TodoListItem id={id} description={description} />
-      ))}
+      <Fragment>
+        {todos.map(({ id, description }) => (
+          <TodoListItem id={id} description={description} />
+        ))}
+      </Fragment>
     </TodoList>
   );
 
@@ -56,5 +58,5 @@ const App = () => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('root')!.append(<App />);
+  document.getElementById('root')!.append((<App />) as HTMLElement);
 });

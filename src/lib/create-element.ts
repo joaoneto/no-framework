@@ -1,22 +1,24 @@
-import './jsx.d';
+export type Component = (...args: any[]) => HTMLElement;
 
-export type Component = (...args: any[]) => HTMLElement | DocumentFragment;
+export type ComponentChildren =
+  | Node
+  | DocumentFragment
+  | HTMLElement
+  | string
+  | number
+  | null
+  | ComponentChildren[];
 
-export type ComponentChildren = Node | string | number | null;
-
-export type ComponentProps = Record<
-  string,
-  (ComponentChildren | HTMLElement)[] | string | number | EventListener
-> | null;
+export type ComponentProps = Record<string, ComponentChildren | string | number> | null;
 
 interface FragmentProps {
-  children: ComponentChildren[];
+  children?: ComponentChildren[];
 }
 
 export const Fragment = ({ children }: FragmentProps) => {
   const fragment = document.createDocumentFragment();
 
-  children.forEach((child) => {
+  children?.forEach((child) => {
     if (!child) return;
     if (typeof child === 'string' || typeof child === 'number') {
       fragment.appendChild(document.createTextNode(child.toString()));
@@ -36,7 +38,7 @@ export const Fragment = ({ children }: FragmentProps) => {
 };
 
 function createElement(
-  name: string | Component,
+  name: string | Component | typeof Fragment,
   props?: ComponentProps,
   ...children: ComponentChildren[]
 ) {
