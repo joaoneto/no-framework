@@ -1,58 +1,16 @@
-import h, { ComponentChildren, Fragment } from './lib/create-element';
+import { Link, Route, Router } from './lib/router';
+import Home from './pages/home';
+import TodoList from './pages/todo-list';
 import './styles.css';
 
-interface TodoListItemProps {
-  id: string;
-  description: string;
-}
-
-interface TodoListProps {
-  children?: ComponentChildren[];
-}
-
-const TodoListItem = ({ id, description }: TodoListItemProps) => <li id={id}>{description}</li>;
-
-const TodoList = ({ children }: TodoListProps) => <ul>{children}</ul>;
-
 const App = () => {
-  // const [todos, { map, rm, add }] = dataAndDOMHandlers([])
-  const todos = [
-    { id: '1', description: 'todo 1' },
-    { id: '2', description: 'todo 2' },
-    { id: '3', description: 'todo 3' },
-  ];
-
-  const todoList = (
-    <TodoList>
-      <Fragment>
-        {todos.map(({ id, description }) => (
-          <TodoListItem id={id} description={description} />
-        ))}
-      </Fragment>
-    </TodoList>
-  );
-
-  const btnAddTodo = <button type="button">Add todo</button>;
-  btnAddTodo.addEventListener('click', () => {
-    const todosLength = todos.length + 1;
-    todos.push({ id: String(todosLength), description: `todo ${todosLength}` });
-
-    const { id, description } = todos[todos.length - 1];
-    todoList.appendChild(<TodoListItem id={id} description={description} />);
-  });
-
-  const btnRemoveTodo = h('button', { type: 'button' }, 'Remove todo');
-  btnRemoveTodo.addEventListener('click', () => {
-    todos.pop();
-    todoList.removeChild(todoList.childNodes.item(todoList.childNodes.length - 1));
-  });
-
   return (
     <main>
-      Hello!
-      {btnAddTodo}
-      {btnRemoveTodo}
-      {todoList}
+      <Link to="/">Home</Link> | <Link to="/todo-list">Todo List</Link>
+      <Router>
+        <Route exact path="/" component={() => (<Home />) as HTMLElement} />
+        <Route path="/todo-list" component={() => (<TodoList />) as HTMLElement} />
+      </Router>
     </main>
   );
 };
