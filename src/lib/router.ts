@@ -1,6 +1,7 @@
 import h from './create-element';
 
 export type RouterProps = {
+  // @todo: fix children type
   children?: RouteProps[];
   update?: (path: string) => void;
 };
@@ -11,7 +12,7 @@ const handleRouteChange = (routes: RouteProps[], pathname: string) => {
       return route.exact ? pathname === route.path : pathname.match(route.path);
     }) || routes[routes.length - 1];
 
-  return currentRoute.component();
+  return currentRoute.component() as HTMLElement;
 };
 
 export const Router = ({ children }: RouterProps) => {
@@ -27,6 +28,10 @@ export const Router = ({ children }: RouterProps) => {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 Router.update = () => {};
+
+document.addEventListener('DOMContentLoaded', () => {
+  window.addEventListener('popstate', () => Router.update());
+});
 
 Router.push = (path: string) => {
   window.history.pushState(null, '', path);
@@ -46,7 +51,7 @@ Router.replace = (path: string) => {
 export type RouteProps = {
   path: string;
   exact?: boolean;
-  component: () => HTMLElement;
+  component: () => JSX.Element | HTMLElement;
 };
 
 export const Route = ({ path, exact, component }: RouteProps) => {
@@ -57,8 +62,15 @@ export const Route = ({ path, exact, component }: RouteProps) => {
   };
 };
 
-export const Link = ({ to, children }: { to: string; children?: any }) => {
-  const anchor = h('a', { href: to }, ...children);
+export interface LinkProps {
+  to: string;
+  className: string;
+  // @todo: fix children type
+  children?: any;
+}
+
+export const Link = ({ to, className, children }: LinkProps) => {
+  const anchor = h('a', { href: to, className }, ...children);
 
   anchor.addEventListener('click', (e) => {
     e.preventDefault();

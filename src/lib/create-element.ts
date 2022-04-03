@@ -9,7 +9,10 @@ export type ComponentChildren =
   | null
   | ComponentChildren[];
 
-export type ComponentProps = Record<string, ComponentChildren | string | number> | null;
+export type ComponentProps = Record<
+  string,
+  ComponentChildren | string | number | CSSStyleDeclaration
+> | null;
 
 interface FragmentProps {
   children?: ComponentChildren[];
@@ -53,6 +56,12 @@ function createElement(
       if (typeof value === 'function') {
         const eventName = prop.toLowerCase().replace(/^on/, '');
         element.addEventListener(eventName, value);
+      } else if (prop === 'style' && typeof value === 'object') {
+        Object.entries(value as CSSStyleDeclaration).forEach(([styleName, styleValue]) => {
+          element.style[styleName] = styleValue;
+        });
+      } else if (prop === 'className') {
+        element.classList.add(...(value as string).split(' '));
       } else {
         element.setAttribute(prop, String(value));
       }
