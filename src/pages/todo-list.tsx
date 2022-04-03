@@ -40,9 +40,9 @@ const TodoList = () => {
 
   return (
     <>
-      {todoList}
       {btnAddTodo}
       {btnRemoveTodo}
+      {todoList}
     </>
   );
 };

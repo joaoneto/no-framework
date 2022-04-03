@@ -8,14 +8,16 @@ interface NavProps {
 
 function Nav({ children }: NavProps) {
   return (
-    <nav className="nav">
-      <ul className="nav__list">{children}</ul>
+    <nav className="nav" primary primary-text>
+      <ul className="nav__list" flex flex-content-start flex-align-center m-0 p-0>
+        {children}
+      </ul>
     </nav>
   );
 }
 
 interface NavItemProps {
-  to: string;
+  to?: string;
   // @todo: fix children types
   children?: string;
 }
@@ -23,9 +25,13 @@ interface NavItemProps {
 export function NavItem({ children, to }: NavItemProps) {
   return (
     <li className="nav__item">
-      <Link to={to} className="nav__link">
-        {children}
-      </Link>
+      {to ? (
+        <Link to={to} className="nav__link" primary-text pr-2>
+          {children}
+        </Link>
+      ) : (
+        children
+      )}
     </li>
   );
 }

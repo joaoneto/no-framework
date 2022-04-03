@@ -69,8 +69,8 @@ export interface LinkProps {
   children?: any;
 }
 
-export const Link = ({ to, className, children }: LinkProps) => {
-  const anchor = h('a', { href: to, className }, ...children);
+export const Link = ({ to, className, children, ...props }: LinkProps) => {
+  const anchor = h('a', { href: to, className, ...props }, ...children);
 
   anchor.addEventListener('click', (e) => {
     e.preventDefault();

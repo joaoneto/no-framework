@@ -5,6 +5,8 @@
   --primary-light-text: #000000;
   --primary-dark: #c40077;
   --primary-dark-text: #ffffff;
+  --background: #ffffff;
+  --text: rgba(0, 0, 0, 0.87);
   --success: #28a745;
   --info: #17a2b8;
   --warning: #ffc107;
@@ -34,4 +36,18 @@
   --spacing-4: 1rem;
   --spacing-5: 1.25rem;
   --spacing-6: 1.5rem;
+}
+
+[theme-light] {
+  --primary: #ff5bc1;
+  --primary-text: #000000;
+  --background: #ffffff;
+  --text: rgba(0, 0, 0, 0.87);
+}
+
+[theme-dark] {
+  --primary: #c40077;
+  --primary-text: #ffffff;
+  --background: #343a40;
+  --text: rgba(255, 255, 255, 0.87);
 }

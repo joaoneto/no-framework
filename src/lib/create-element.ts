@@ -11,7 +11,7 @@ export type ComponentChildren =
 
 export type ComponentProps = Record<
   string,
-  ComponentChildren | string | number | CSSStyleDeclaration
+  ComponentChildren | string | number | boolean | CSSStyleDeclaration
 > | null;
 
 interface FragmentProps {
@@ -63,7 +63,7 @@ function createElement(
       } else if (prop === 'className') {
         element.classList.add(...(value as string).split(' '));
       } else {
-        element.setAttribute(prop, String(value));
+        element.setAttribute(prop, value === true ? '' : String(value));
       }
     });
   }
