@@ -1,8 +1,7 @@
 import h from './create-element';
 
 export type RouterProps = {
-  // @todo: fix children type
-  children?: RouteProps[];
+  children: RouteProps[];
   update?: (path: string) => void;
 };
 
@@ -54,7 +53,7 @@ export type RouteProps = {
   component: () => JSX.Element | HTMLElement;
 };
 
-export const Route = ({ path, exact, component }: RouteProps) => {
+export const Route = ({ path, exact, component }: RouteProps): RouteProps => {
   return {
     path,
     exact,
@@ -64,15 +63,13 @@ export const Route = ({ path, exact, component }: RouteProps) => {
 
 export interface LinkProps {
   to: string;
-  className: string;
-  // @todo: fix children type
-  children?: any;
+  children: string;
 }
 
-export const Link = ({ to, className, children, ...props }: LinkProps) => {
-  const anchor = h('a', { href: to, className, ...props }, ...children);
+export const Link = ({ to, children, ...props }: LinkProps) => {
+  const anchor = h('a', { href: to, ...props }, ...children);
 
-  anchor.addEventListener('click', (e) => {
+  anchor.addEventListener('click', (e: any) => {
     e.preventDefault();
     Router.push(to);
   });

@@ -1,27 +1,7 @@
-export type Component = (...args: any[]) => HTMLElement;
-
-export type ComponentChildren =
-  | Node
-  | DocumentFragment
-  | HTMLElement
-  | string
-  | number
-  | null
-  | ComponentChildren[];
-
-export type ComponentProps = Record<
-  string,
-  ComponentChildren | string | number | boolean | CSSStyleDeclaration
-> | null;
-
-interface FragmentProps {
-  children?: ComponentChildren[];
-}
-
-export const Fragment = ({ children }: FragmentProps) => {
+export const Fragment = ({ children }: { children: NF.Children }) => {
   const fragment = document.createDocumentFragment();
 
-  children?.forEach((child) => {
+  children?.forEach((child: NF.Children) => {
     if (!child) return;
     if (typeof child === 'string' || typeof child === 'number') {
       fragment.appendChild(document.createTextNode(child.toString()));
@@ -40,16 +20,20 @@ export const Fragment = ({ children }: FragmentProps) => {
   return fragment;
 };
 
-function createElement(
-  name: string | Component | typeof Fragment,
-  props?: ComponentProps,
-  ...children: ComponentChildren[]
-) {
-  if (typeof name === 'function') {
-    return name({ ...props, children });
-  }
+function createComponentElement(component: (props: any) => any, props: any, ...children: any) {
+  const element = component({ ...props, children });
+  return element;
+}
 
-  const element = document.createElement(name);
+function createElement(
+  name: keyof HTMLElementTagNameMap | ((props: any) => any),
+  props: any,
+  ...children: NF.Children
+) {
+  const element =
+    typeof name === 'function'
+      ? createComponentElement(name, props, children)
+      : document.createElement(name);
 
   if (props) {
     Object.entries(props).forEach(([prop, value]) => {
@@ -68,7 +52,7 @@ function createElement(
     });
   }
 
-  children.forEach((child) => {
+  children.forEach((child: NF.Children) => {
     if (!child) return;
     if (typeof child === 'string' || typeof child === 'number') {
       element.appendChild(document.createTextNode(String(child)));
@@ -76,7 +60,7 @@ function createElement(
     }
 
     if (Array.isArray(child)) {
-      element.appendChild(createElement(Fragment, null, child));
+      element.appendChild(createComponentElement(Fragment, null, child));
       return;
     }
 

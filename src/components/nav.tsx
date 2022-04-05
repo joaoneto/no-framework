@@ -2,8 +2,7 @@ import { Link } from '@/lib/router';
 import './nav.css';
 
 interface NavProps {
-  // @todo: fix children types
-  children?: JSX.Element[];
+  children: JSX.Element[] | JSX.Element;
 }
 
 function Nav({ children }: NavProps) {
@@ -18,8 +17,7 @@ function Nav({ children }: NavProps) {
 
 interface NavItemProps {
   to?: string;
-  // @todo: fix children types
-  children?: string;
+  children: string | NF.Children;
 }
 
 export function NavItem({ children, to }: NavItemProps) {
