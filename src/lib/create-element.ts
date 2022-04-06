@@ -1,7 +1,8 @@
-export const Fragment = ({ children }: { children: NF.Children }) => {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export const Fragment = ({ children }: { children: any[] }) => {
   const fragment = document.createDocumentFragment();
 
-  children?.forEach((child: NF.Children) => {
+  children?.forEach((child) => {
     if (!child) return;
     if (typeof child === 'string' || typeof child === 'number') {
       fragment.appendChild(document.createTextNode(child.toString()));
@@ -28,7 +29,7 @@ function createComponentElement(component: (props: any) => any, props: any, ...c
 function createElement(
   name: keyof HTMLElementTagNameMap | ((props: any) => any),
   props: any,
-  ...children: NF.Children
+  ...children: any[]
 ) {
   const element =
     typeof name === 'function'
@@ -52,7 +53,7 @@ function createElement(
     });
   }
 
-  children.forEach((child: NF.Children) => {
+  children.forEach((child) => {
     if (!child) return;
     if (typeof child === 'string' || typeof child === 'number') {
       element.appendChild(document.createTextNode(String(child)));

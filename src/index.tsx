@@ -4,9 +4,9 @@ import Home from './pages/home';
 import TodoList from './pages/todo-list';
 import './styles.css';
 
-const App = () => {
-  const selectTheme = (
-    <select>
+const App = (): HTMLElement => {
+  const selectTheme: HTMLSelectElement = (
+    <select style={{ flex: '1' }}>
       <option value="">default</option>
       <option value="light" selected={window.matchMedia('(prefers-color-scheme: light)').matches}>
         light
@@ -28,7 +28,7 @@ const App = () => {
 
   return (
     <main>
-      <Nav>
+      <Nav style={{}}>
         <NavItem to="/">Home</NavItem>
         <NavItem to="/todo-list">Todo List</NavItem>
         <NavItem>Theme: {selectTheme}</NavItem>
@@ -45,5 +45,5 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
     document.body.setAttribute('theme-dark', '');
   }
-  document.getElementById('root')!.append((<App />) as HTMLElement);
+  document.getElementById('root')!.append(<App />);
 });

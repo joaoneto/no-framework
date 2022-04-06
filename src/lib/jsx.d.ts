@@ -1,31 +1,29 @@
+/* eslint-disable @typescript-eslint/no-empty-interface */
+/* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-declare namespace NF {
-  type Children<C = any> = C | C[];
-
-  type Props<P = any> = P & {
-    className?: string;
-  };
-}
-
 declare namespace JSX {
-  type Element = any;
+  export type BaseElement<T = any> = T;
 
-  type Fragment = DocumentFragment;
+  export type Element = BaseElement<any>;
 
-  interface ElementAttributesProperty {
-    props: NF.Props;
+  export type ElementAttrs<T = any extends infer R ? R : any> = Omit<T, 'children' | 'style'> &
+    IntrinsicAttributes;
+
+  export type Fragment = DocumentFragment;
+
+  export interface LibraryManagedAttributes {}
+
+  export interface ElementChildrenAttribute {
+    children: any;
   }
 
-  interface ElementChildrenAttribute {
-    children: NF.Children;
+  export interface IntrinsicAttributes extends LibraryManagedAttributes {
+    className?: string;
+    style?: Partial<CSSStyleDeclaration>;
+    children?: any;
   }
 
-  interface IntrinsicAttributes {
-    [key: string]: any;
-  }
-
-  type IntrinsicElements = {
-    // [tagName in keyof HTMLElementTagNameMap]: Partial<HTMLElementTagNameMap[tagName]>;
-    [tagName in keyof HTMLElementTagNameMap]: any;
+  export type IntrinsicElements = {
+    [tagName in keyof HTMLElementTagNameMap]: ElementAttrs<Partial<HTMLElementTagNameMap[tagName]>>;
   };
 }

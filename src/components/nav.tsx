@@ -17,7 +17,7 @@ function Nav({ children }: NavProps) {
 
 interface NavItemProps {
   to?: string;
-  children: string | NF.Children;
+  children: string | JSX.Element;
 }
 
 export function NavItem({ children, to }: NavItemProps) {
