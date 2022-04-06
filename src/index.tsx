@@ -6,7 +6,7 @@ import './styles.css';
 
 const App = (): HTMLElement => {
   const selectTheme: HTMLSelectElement = (
-    <select style={{ flex: '1' }}>
+    <select>
       <option value="">default</option>
       <option value="light" selected={window.matchMedia('(prefers-color-scheme: light)').matches}>
         light
@@ -28,7 +28,7 @@ const App = (): HTMLElement => {
 
   return (
     <main>
-      <Nav style={{}}>
+      <Nav>
         <NavItem to="/">Home</NavItem>
         <NavItem to="/todo-list">Todo List</NavItem>
         <NavItem>Theme: {selectTheme}</NavItem>
