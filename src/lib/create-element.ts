@@ -21,27 +21,20 @@ export const Fragment = ({ children }: { children: any[] }) => {
   return fragment;
 };
 
-function createComponentElement(component: (props: any) => any, props: any, ...children: any) {
-  const element = component({ ...props, children });
-  return element;
-}
-
 function createElement(
   name: keyof HTMLElementTagNameMap | ((props: any) => any),
   props: any,
   ...children: any[]
 ) {
-  const element =
-    typeof name === 'function'
-      ? createComponentElement(name, props, children)
-      : document.createElement(name);
+  if (typeof name === 'function') {
+    return name({ ...props, children });
+  }
+
+  const element = document.createElement(name);
 
   if (props) {
     Object.entries(props).forEach(([prop, value]) => {
-      if (typeof value === 'function') {
-        const eventName = prop.toLowerCase().replace(/^on/, '');
-        element.addEventListener(eventName, value);
-      } else if (prop === 'style' && typeof value === 'object') {
+      if (prop === 'style' && typeof value === 'object') {
         Object.entries(value as CSSStyleDeclaration).forEach(([styleName, styleValue]) => {
           element.style[styleName] = styleValue;
         });
@@ -61,7 +54,7 @@ function createElement(
     }
 
     if (Array.isArray(child)) {
-      element.appendChild(createComponentElement(Fragment, null, child));
+      element.appendChild(Fragment({ children: child }));
       return;
     }
 
