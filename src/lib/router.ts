@@ -50,7 +50,7 @@ Router.replace = (path: string) => {
 export type RouteProps = {
   path: string;
   exact?: boolean;
-  component: () => JSX.Element | HTMLElement;
+  component: () => JSX.Children;
 };
 
 export const Route = ({ path, exact, component }: RouteProps): RouteProps => {
@@ -63,10 +63,10 @@ export const Route = ({ path, exact, component }: RouteProps): RouteProps => {
 
 export interface LinkProps {
   to: string;
-  children: string;
+  children: any;
 }
 
-export const Link = ({ to, children, ...props }: LinkProps) => {
+export const Link = ({ to, children, ...props }: LinkProps): HTMLAnchorElement => {
   const anchor = h('a', { href: to, ...props }, ...children);
 
   anchor.addEventListener('click', (e: any) => {

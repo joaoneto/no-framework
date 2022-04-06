@@ -2,7 +2,7 @@ import { Link } from '@/lib/router';
 import './nav.css';
 
 interface NavProps {
-  children: JSX.Element[] | JSX.Element;
+  children: JSX.Children;
 }
 
 function Nav({ children }: NavProps) {
@@ -17,7 +17,7 @@ function Nav({ children }: NavProps) {
 
 interface NavItemProps {
   to?: string;
-  children: string | JSX.Element;
+  children: JSX.Children;
 }
 
 export function NavItem({ children, to }: NavItemProps) {

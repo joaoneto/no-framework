@@ -2,25 +2,27 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 declare namespace JSX {
-  export type BaseElement<T = any> = T;
+  export type Children = string | JSX.Element | (string | JSX.Element)[] | null;
 
-  export type Element = BaseElement<any>;
+  // HTMLElement will be nice to have here, but I'm not finding a way to infer a generic render
+  // for <Route /> as { path: string; component: () => JSX.Element } is not assignable to JSX.Element
+  // export type Element = HTMLElement;
+  export type Element = any;
 
-  export type ElementAttrs<T = any extends infer R ? R : any> = Omit<T, 'children' | 'style'> &
-    IntrinsicAttributes;
+  export type ElementAttrs<T> = Omit<T, 'children' | 'style'> & IntrinsicAttributes;
 
   export type Fragment = DocumentFragment;
 
   export interface LibraryManagedAttributes {}
 
   export interface ElementChildrenAttribute {
-    children: any;
+    children: {};
   }
 
   export interface IntrinsicAttributes extends LibraryManagedAttributes {
     className?: string;
     style?: Partial<CSSStyleDeclaration>;
-    children?: any;
+    children?: Children;
   }
 
   export type IntrinsicElements = {
