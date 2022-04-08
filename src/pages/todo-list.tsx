@@ -5,23 +5,34 @@ interface TodoListItemProps {
   description: string;
 }
 
+let latId = 0;
+const getId = () => {
+  latId += 1;
+  return latId.toString();
+};
+
 const TodoListItem = ({ id, description }: TodoListItemProps) => (
-  <ListItem id={id} flex-content-between>
-    <span style={{ flex: '0 0 30px' }}>{id}</span>
+  <ListItem id={id} flex-content-between todo-item>
+    <span style={{ flex: '0 0 30px' }}>
+      <input type="checkbox" ev-toggle />
+    </span>
     <span style={{ flex: '0 1 100%' }}>{description}</span>
     <span style={{ flex: '1 0 auto' }}>
-      <button type="button">edit</button>
-      <button type="button">remove</button>
+      <button type="button" ev-edit>
+        edit
+      </button>
+      <button type="button" ev-remove>
+        remove
+      </button>
     </span>
   </ListItem>
 );
 
 const TodoList = () => {
-  // const [todos, { map, rm, add }] = dataAndDOMHandlers([])
   const todos = [
-    { id: '1', description: 'todo 1' },
-    { id: '2', description: 'todo 2' },
-    { id: '3', description: 'todo 3' },
+    { id: getId(), description: 'todo 1' },
+    { id: getId(), description: 'todo 2' },
+    { id: getId(), description: 'todo 3' },
   ];
 
   const todoList = (
@@ -32,25 +43,42 @@ const TodoList = () => {
     </List>
   );
 
+  todoList.addEventListener('click', (e: MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.matches('[ev-remove]')) {
+      const parent = target.closest('[todo-item]');
+      if (parent) {
+        todos.splice(
+          todos.findIndex((todo) => todo.id === parent.id),
+          1,
+        );
+        parent.remove();
+      }
+      return;
+    }
+
+    if (target.matches('[ev-toggle]')) {
+      const parent = target.closest('[todo-item]') as HTMLElement;
+      if (parent) {
+        parent.removeAttribute('success');
+        if ((target as HTMLInputElement).checked) {
+          parent.setAttribute('success', '');
+        }
+      }
+    }
+  });
+
   const btnAddTodo = <button type="button">Add todo</button>;
   btnAddTodo.addEventListener('click', () => {
-    const todosLength = todos.length + 1;
-    todos.push({ id: String(todosLength), description: `todo ${todosLength}` });
+    todos.push({ id: getId(), description: 'new todo' });
 
     const { id, description } = todos[todos.length - 1];
     todoList.appendChild(<TodoListItem id={id} description={description} />);
   });
 
-  const btnRemoveTodo = <button type="button">Remove todo</button>;
-  btnRemoveTodo.addEventListener('click', () => {
-    todos.pop();
-    todoList.removeChild(todoList.childNodes.item(todoList.childNodes.length - 1));
-  });
-
   return (
     <>
       {btnAddTodo}
-      {btnRemoveTodo}
       {todoList}
     </>
   );
