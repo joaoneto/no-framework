@@ -1,42 +1,52 @@
 [primary] {
   background: var(--primary);
+  color: var(--primary-inverse);
+}
+[primary] a {
+  color: inherit;
 }
 [primary-text] {
-  color: var(--primary-text);
+  color: var(--primary);
 }
 [success] {
   background: var(--success);
+  color: var(--success-inverse);
 }
 [success-text] {
-  color: var(--success-text);
+  color: var(--success);
 }
 [info] {
   background: var(--info);
+  color: var(--info-inverse);
 }
 [info-text] {
-  color: var(--info-text);
+  color: var(--info);
 }
 [warning] {
   background: var(--warning);
+  color: var(--warning-inverse);
 }
 [warning-text] {
-  color: var(--warning-text);
+  color: var(--warning);
 }
 [danger] {
   background: var(--danger);
+  color: var(--danger-inverse);
 }
 [danger-text] {
-  color: var(--danger-text);
+  color: var(--danger);
 }
 [light] {
   background: var(--light);
+  color: var(--light-inverse);
 }
 [light-text] {
-  color: var(--light-text);
+  color: var(--light);
 }
 [dark] {
   background: var(--dark);
+  color: var(--dark-inverse);
 }
 [dark-text] {
-  color: var(--dark-text);
+  color: var(--dark);
 }

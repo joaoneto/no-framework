@@ -7,7 +7,7 @@ interface NavProps {
 
 function Nav({ children }: NavProps) {
   return (
-    <nav className="nav" primary primary-text>
+    <nav className="nav" primary>
       <ul className="nav__list" flex flex-content-start flex-align-center m-0 p-0>
         {children}
       </ul>
@@ -24,7 +24,7 @@ export function NavItem({ children, to }: NavItemProps) {
   return (
     <li className="nav__item">
       {to ? (
-        <Link to={to} className="nav__link" primary-text pr-2>
+        <Link to={to} className="nav__link" pr-2>
           {children}
         </Link>
       ) : (

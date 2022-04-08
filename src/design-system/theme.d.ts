@@ -3,6 +3,7 @@
 declare namespace JSX {
   export interface LibraryManagedAttributes {
     primary?: boolean;
+    'primary-text'?: boolean;
     success?: boolean;
     'success-text'?: boolean;
     info?: boolean;
