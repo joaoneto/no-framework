@@ -39,7 +39,7 @@ function createElement(
           element.style[styleName] = styleValue;
         });
       } else if (prop === 'className') {
-        element.classList.add(...(value as string).split(' '));
+        element.classList.add(...((value as string) || '').trim().split(/\s+/));
       } else {
         element.setAttribute(prop, value === true ? '' : String(value));
       }
