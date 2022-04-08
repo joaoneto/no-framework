@@ -1,11 +1,20 @@
-import '@/lib/create-element';
+import List, { ListItem } from '@/components/list';
 
 interface TodoListItemProps {
   id: string;
   description: string;
 }
 
-const TodoListItem = ({ id, description }: TodoListItemProps) => <li id={id}>{description}</li>;
+const TodoListItem = ({ id, description }: TodoListItemProps) => (
+  <ListItem id={id} flex-content-between>
+    <span style={{ flex: '0 0 30px' }}>{id}</span>
+    <span style={{ flex: '0 1 100%' }}>{description}</span>
+    <span style={{ flex: '1 0 auto' }}>
+      <button type="button">edit</button>
+      <button type="button">remove</button>
+    </span>
+  </ListItem>
+);
 
 const TodoList = () => {
   // const [todos, { map, rm, add }] = dataAndDOMHandlers([])
@@ -16,11 +25,11 @@ const TodoList = () => {
   ];
 
   const todoList = (
-    <ul>
+    <List>
       {todos.map(({ id, description }) => (
         <TodoListItem id={id} description={description} />
       ))}
-    </ul>
+    </List>
   );
 
   const btnAddTodo = <button type="button">Add todo</button>;
