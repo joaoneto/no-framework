@@ -27,17 +27,21 @@ const App = (): HTMLElement => {
   });
 
   return (
-    <main>
-      <Nav>
-        <NavItem to="/">Home</NavItem>
-        <NavItem to="/todo-list">Todo List</NavItem>
-        <NavItem>Theme: {selectTheme}</NavItem>
-      </Nav>
-      <Router>
-        <Route exact path="/" component={() => <Home />} />
-        <Route path="/todo-list" component={() => <TodoList />} />
-      </Router>
-    </main>
+    <>
+      <header>
+        <Nav>
+          <NavItem to="/">Home</NavItem>
+          <NavItem to="/todo-list">Todo List</NavItem>
+          <NavItem>Theme: {selectTheme}</NavItem>
+        </Nav>
+      </header>
+      <main>
+        <Router>
+          <Route exact path="/" component={() => <Home />} />
+          <Route path="/todo-list" component={() => <TodoList />} />
+        </Router>
+      </main>
+    </>
   );
 };
 
@@ -45,5 +49,5 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
     document.body.setAttribute('theme-dark', '');
   }
-  document.getElementById('root')!.append(<App />);
+  document.getElementById('root')!.replaceWith(<App />);
 });
