@@ -1,20 +1,56 @@
+import createStore from '@/lib/create-store';
 import List, { ListItem } from '@/components/list';
 
 interface TodoListItemProps {
   id: string;
   description: string;
+  completed?: boolean;
 }
 
-let latId = 0;
+let lastId = 0;
 const getId = () => {
-  latId += 1;
-  return latId.toString();
+  lastId += 1;
+  return lastId.toString();
 };
 
-const TodoListItem = ({ id, description }: TodoListItemProps) => (
-  <ListItem id={id} flex-content-between todo-item>
+const initialState = {
+  todos: [
+    { id: getId(), description: 'todo 1' },
+    { id: getId(), description: 'todo 2' },
+    { id: getId(), description: 'todo 3' },
+  ],
+};
+
+const store = createStore(initialState);
+
+const addTodo = (description: string) => {
+  const todo = { id: getId(), description };
+  store.set('todos', [...store.get('todos'), todo]);
+};
+
+const removeTodo = (id: string) => {
+  store.set(
+    'todos',
+    store.get('todos').filter((todo: TodoListItemProps) => todo.id !== id),
+  );
+};
+
+const saveTodo = ({ id, description, completed }: Partial<TodoListItemProps>) => {
+  const _todos = store.get('todos');
+  const todo = _todos.find((_todo: TodoListItemProps) => _todo.id === id);
+
+  if (todo) {
+    todo.description = description || todo.description;
+    todo.completed = completed !== undefined ? completed : todo.completed;
+  }
+
+  store.set('todos', _todos);
+};
+
+const TodoListItem = ({ id, description, completed }: TodoListItemProps) => (
+  <ListItem id={id} flex-content-between todo-item success={completed}>
     <span style={{ flex: '0 0 30px' }}>
-      <input type="checkbox" ev-handler="toggle" />
+      <input type="checkbox" ev-handler="toggle-complete" checked={completed} />
     </span>
     <span style={{ flex: '0 1 100%' }}>
       <input type="text" value={description} hidden />
@@ -31,101 +67,90 @@ const TodoListItem = ({ id, description }: TodoListItemProps) => (
   </ListItem>
 );
 
-const TodoList = () => {
-  const todos = [
-    { id: getId(), description: 'todo 1' },
-    { id: getId(), description: 'todo 2' },
-    { id: getId(), description: 'todo 3' },
-  ];
+const init = () => {
+  const todoList = document.querySelector('[todo-list]');
+  const addTodoButton = document.querySelector('[add-todo]');
 
-  const todoList = (
-    <List>
-      {todos.map(({ id, description }) => (
-        <TodoListItem id={id} description={description} />
-      ))}
-    </List>
+  addTodoButton?.addEventListener('click', () => {
+    addTodo('New todo');
+  });
+
+  todoList?.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const event = target?.getAttribute('ev-handler');
+    const todoItem = target?.closest('[todo-item]');
+    const id = todoItem?.getAttribute('id');
+
+    switch (event) {
+      case 'remove':
+        if (id) {
+          removeTodo(id);
+        }
+        break;
+      case 'toggle-complete':
+        if (id) {
+          saveTodo({
+            id,
+            completed: (target as HTMLInputElement).checked,
+          });
+        }
+        break;
+      default:
+        break;
+    }
+  });
+};
+
+const patch = (todoList: Element, todos: TodoListItemProps[]) => {
+  const todoListChildren = todoList.children;
+  const todoListChildrenIds = Array.from(todoListChildren).map((child) => child.id);
+  const todoListChildrenToRemove = todoListChildrenIds.filter(
+    (id: string) => !todos.find((todo) => todo.id === id),
   );
 
-  const handlerToggle = (e: MouseEvent) => {
-    const target = e.target as HTMLElement;
-    const parent = target.closest('[todo-item]');
-    if (parent) {
-      parent.removeAttribute('success');
-      if ((target as HTMLInputElement).checked) {
-        parent.setAttribute('success', '');
-      }
-    }
-  };
-
-  const handlerRemove = (e: MouseEvent) => {
-    const target = e.target as HTMLElement;
-    const parent = target.closest('[todo-item]');
-    if (parent) {
-      todos.splice(
-        todos.findIndex((todo) => todo.id === parent.id),
-        1,
-      );
-      parent.remove();
-    }
-  };
-
-  const handlerEdit = (e: MouseEvent) => {
-    const target = e.target as HTMLElement;
-    const parent = target.closest('[todo-item]');
-    if (parent) {
-      const input = parent.querySelector('input[type="text"]') as HTMLInputElement;
-      const span = input.nextElementSibling as HTMLSpanElement;
-
-      const handlerUpdate = (_e: KeyboardEvent | FocusEvent) => {
-        if ((_e instanceof KeyboardEvent && _e.key === 'Enter') || _e instanceof FocusEvent) {
-          input.setAttribute('hidden', '');
-          span.removeAttribute('hidden');
-          span.replaceChildren(document.createTextNode(input.value));
-          input.removeEventListener('keydown', handlerUpdate);
-          input.removeEventListener('blur', handlerUpdate);
-        }
-      };
-
-      span.setAttribute('hidden', '');
-      input.removeAttribute('hidden');
-      input.focus();
-      input.addEventListener('blur', handlerUpdate);
-      input.addEventListener('keydown', handlerUpdate);
-    }
-  };
-
-  todoList.addEventListener('click', (e: MouseEvent) => {
-    const target = e.target as HTMLElement;
-
-    if (target.matches('[ev-handler]')) {
-      switch (target.getAttribute('ev-handler')) {
-        case 'toggle':
-          handlerToggle(e);
-          break;
-        case 'remove':
-          handlerRemove(e);
-          break;
-        case 'edit':
-          handlerEdit(e);
-          break;
-        default:
-          break;
-      }
+  // remove children from todo list
+  todoListChildrenToRemove.forEach((id: string) => {
+    const child = todoList.querySelector(`[id="${id}"]`);
+    if (child) {
+      todoList.removeChild(child);
     }
   });
 
-  const btnAddTodo = <button type="button">Add todo</button>;
-  btnAddTodo.addEventListener('click', () => {
-    todos.push({ id: getId(), description: 'new todo' });
+  todos.forEach((todo: TodoListItemProps) => {
+    // add children to todo list
+    if (!todoListChildrenIds.includes(todo.id)) {
+      const todoListItem = <TodoListItem {...todo} />;
+      todoList.appendChild(todoListItem);
+    } else {
+      // update children in todo list
+      const child = todoList.querySelector(`[id="${todo.id}"]`);
+      if (child) {
+        todoList.replaceChild(<TodoListItem {...todo} />, child);
+      }
+    }
+  });
+};
 
-    const { id, description } = todos[todos.length - 1];
-    todoList.appendChild(<TodoListItem id={id} description={description} />);
+const TodoList = () => {
+  const todos = store.get('todos');
+
+  setTimeout(init);
+
+  store.subscribe('todos', (_todos: TodoListItemProps[]) => {
+    const list = document.querySelector('[todo-list]');
+    if (list) patch(list, _todos);
   });
 
   return (
     <>
-      {btnAddTodo}
-      {todoList}
+      <button type="button" add-todo>
+        Add todo
+      </button>
+      <List todo-list>
+        {todos.map((todo: TodoListItemProps) => (
+          <TodoListItem {...todo} />
+        ))}
+      </List>
     </>
   );
 };
