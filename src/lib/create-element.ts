@@ -40,7 +40,7 @@ function createElement(
         });
       } else if (prop === 'className') {
         element.classList.add(...((value as string) || '').trim().split(/\s+/));
-      } else {
+      } else if (value) {
         element.setAttribute(prop, value === true ? '' : String(value));
       }
     });
