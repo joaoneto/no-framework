@@ -1,12 +1,13 @@
 import './list.css';
 
 interface ListProps {
+  className?: string;
   children: JSX.Children;
 }
 
-function List({ children }: ListProps) {
+function List({ children, className = '', ...props }: ListProps) {
   return (
-    <ul className="list" flex flex-column m-0 p-0>
+    <ul {...props} className={`list ${className}`} flex flex-column m-0 p-0>
       {children}
     </ul>
   );
