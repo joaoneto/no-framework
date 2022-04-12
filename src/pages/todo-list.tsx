@@ -47,6 +47,28 @@ const saveTodo = ({ id, description, completed }: Partial<TodoListItemProps>) =>
   store.set('todos', _todos);
 };
 
+const toggleEdit = (todoItem: Element | null) => {
+  const descriptionInut = todoItem?.querySelector('[type="text"]') as HTMLInputElement;
+  const handlerSaveTodo = (e: KeyboardEvent | FocusEvent) => {
+    if (e instanceof FocusEvent || e.key === 'Enter') {
+      descriptionInut.nextElementSibling?.removeAttribute('hidden');
+      descriptionInut.setAttribute('hidden', '');
+      saveTodo({
+        id: todoItem?.id,
+        description: descriptionInut.value,
+      });
+    }
+  };
+
+  if (descriptionInut) {
+    descriptionInut.nextElementSibling?.setAttribute('hidden', '');
+    descriptionInut.removeAttribute('hidden');
+    descriptionInut.focus();
+    descriptionInut.addEventListener('blur', handlerSaveTodo);
+    descriptionInut.addEventListener('keydown', handlerSaveTodo);
+  }
+};
+
 const TodoListItem = ({ id, description, completed }: TodoListItemProps) => (
   <ListItem id={id} flex-content-between todo-item success={completed}>
     <span style={{ flex: '0 0 30px' }}>
@@ -57,7 +79,7 @@ const TodoListItem = ({ id, description, completed }: TodoListItemProps) => (
       <span>{description}</span>
     </span>
     <span style={{ flex: '1 0 auto' }}>
-      <button type="button" ev-handler="edit">
+      <button type="button" ev-handler="toggle-edit">
         edit
       </button>
       <button type="button" ev-handler="remove">
@@ -82,6 +104,9 @@ const init = () => {
     const id = todoItem?.getAttribute('id');
 
     switch (event) {
+      case 'toggle-edit':
+        toggleEdit(todoItem);
+        break;
       case 'remove':
         if (id) {
           removeTodo(id);
@@ -125,7 +150,17 @@ const patch = (todoList: Element, todos: TodoListItemProps[]) => {
       // update children in todo list
       const child = todoList.querySelector(`[id="${todo.id}"]`);
       if (child) {
-        todoList.replaceChild(<TodoListItem {...todo} />, child);
+        if (child.hasAttribute('success') && !todo.completed) {
+          child.removeAttribute('success');
+        } else if (!child.hasAttribute('success') && todo.completed) {
+          child.setAttribute('success', '');
+        }
+
+        const descriptionText = child.querySelector('[type="text"]')
+          ?.nextElementSibling as HTMLSpanElement;
+        if (descriptionText) {
+          descriptionText.textContent = todo.description;
+        }
       }
     }
   });
