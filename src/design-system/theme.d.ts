@@ -102,5 +102,7 @@ declare namespace JSX {
     'ml-4'?: boolean;
     'ml-5'?: boolean;
     'ml-6'?: boolean;
+
+    sticky?: boolean;
   }
 }

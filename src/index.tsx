@@ -28,7 +28,7 @@ const App = (): HTMLElement => {
 
   return (
     <>
-      <header>
+      <header sticky>
         <Nav>
           <NavItem to="/">Home</NavItem>
           <NavItem to="/todo-list">Todo List</NavItem>
