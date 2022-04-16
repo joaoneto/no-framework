@@ -1,10 +1,10 @@
 import createPubSub from './pub-sub';
 import { Router } from './router';
 
-const { publish, subscribe, crearSubscribers } = createPubSub();
+const { publish, subscribe, clearSubscribers } = createPubSub();
 
 Router.onChangeStart(() => {
-  crearSubscribers();
+  clearSubscribers();
 });
 
 export const listen =

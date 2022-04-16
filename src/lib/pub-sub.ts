@@ -26,7 +26,7 @@ const createPubSub = () => {
     }
   };
 
-  const crearSubscribers = () => {
+  const clearSubscribers = () => {
     events = {};
   };
 
@@ -34,7 +34,7 @@ const createPubSub = () => {
     publish,
     subscribe,
     unsubscribe,
-    crearSubscribers,
+    clearSubscribers,
   };
 };
 
