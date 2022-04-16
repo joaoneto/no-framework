@@ -1,15 +1,22 @@
-export default function createStore(initialState = {}) {
-  const state: any = { ...initialState };
-  const listeners: any = {};
+type Callback<T = any> = (state: T) => void;
 
-  const subscribe = (key: string, listener: any) => {
+const globalState = {};
+
+export default function createStore<T>(key: string, initialState: T) {
+  const listeners: Callback<T>[] = [];
+
+  if (!globalState[key]) {
+    globalState[key] = initialState;
+  }
+
+  const subscribe = (listener: Callback<T>) => {
     if (!listeners[key]) {
       listeners[key] = [];
     }
     listeners[key].push(listener);
   };
 
-  const unsubscribe = (key: string, listener: any) => {
+  const unsubscribe = (listener: Callback<T>) => {
     if (!listeners[key]) {
       return;
     }
@@ -19,20 +26,20 @@ export default function createStore(initialState = {}) {
     }
   };
 
-  const notify = (key: string, data: any) => {
+  const notify = (data: T) => {
     if (!listeners[key]) {
       return;
     }
-    listeners[key].forEach((listener: any) => listener(data));
+    listeners[key].forEach((listener: Callback<T>) => listener(data));
   };
 
-  const get = (key: string) => {
-    return state[key];
+  const get = (): T => {
+    return globalState[key];
   };
 
-  const set = (key: string, value: any) => {
-    state[key] = value;
-    notify(key, value);
+  const set = (value: T) => {
+    globalState[key] = value;
+    notify(value);
   };
 
   return {
