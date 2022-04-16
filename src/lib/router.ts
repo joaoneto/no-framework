@@ -1,4 +1,7 @@
 import h from './create-element';
+import createPubSub from './pub-sub';
+
+const { publish, subscribe } = createPubSub();
 
 export type RouterProps = {
   children: RouteProps[];
@@ -17,8 +20,14 @@ const handleRouteChange = (routes: RouteProps[], pathname: string) => {
 export const Router = ({ children }: RouterProps) => {
   const RouterWrapper = document.createElement('div');
   const routes = children || [];
-  Router.update = () =>
-    RouterWrapper.replaceChildren(handleRouteChange(routes, window.location.pathname));
+
+  Router.update = () => {
+    publish('router:changeStart', {});
+    setTimeout(() => {
+      RouterWrapper.replaceChildren(handleRouteChange(routes, window.location.pathname));
+      publish('router:changeEnd', {});
+    });
+  };
 
   Router.update();
 
@@ -45,6 +54,14 @@ Router.pop = () => {
 Router.replace = (path: string) => {
   window.history.replaceState(null, '', path);
   Router.update();
+};
+
+Router.onChangeStart = (fn: (...args: any) => void) => {
+  subscribe('router:changeStart', fn);
+};
+
+Router.onChangeEnd = (fn: (...args: any) => void) => {
+  subscribe('router:changeEnd', fn);
 };
 
 export type RouteProps = {
